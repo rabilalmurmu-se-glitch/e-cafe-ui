@@ -1,0 +1,65 @@
+.confirm-root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 90vh;
+    padding: 20px;
+}
+
+.confirm-card {
+    background: var(--background);
+    text-align: center;
+    padding: 40px;
+    border-radius: 16px;
+    width: 400px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.checkmark {
+    font-size: 60px;
+    color: #4caf50;
+    margin-bottom: 15px;
+    animation: pop 0.5s ease-in-out;
+}
+
+@keyframes pop {
+    0% {
+        transform: scale(0);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.confirm-card h2 {
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+.confirm-card p {
+    color: var(--text-dark);
+    font-size: 15px;
+}
+
+.order-details {
+    background: var(--background);
+    padding: 10px;
+    border-radius: 8px;
+    margin: 20px 0;
+    font-size: 14px;
+}
+
+.home-btn {
+    background-color: var(--primary);
+    color: var(--text-light);
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.home-btn:hover {
+    background-color: var(--accent);
+}

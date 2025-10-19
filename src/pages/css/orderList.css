@@ -1,0 +1,109 @@
+.Order-root {
+  padding: 40px 20px;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.Order-root .heading {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.order-list-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+/* Left side - Tea List */
+.list {
+  flex: 1 1 60%;
+  min-width: 350px;
+}
+
+.empty-text {
+  text-align: center;
+  color: #777;
+  font-size: 16px;
+}
+
+/* Right side - Summary */
+.order-summery {
+    margin-top: 30px;
+  flex: 1 1 30%;
+  min-width: 280px;
+}
+
+.summery-card {
+  background-color: var(--background);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.summery-card .title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.divider {
+  height: 1px;
+  background-color: #ddd;
+  margin: 10px 0;
+}
+
+.summery-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  color: #555;
+}
+
+.total-order-amount {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 15px;
+}
+
+.checkout-btn {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.checkout-btn button {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 16px;
+}
+
+.checkout-btn button:hover {
+  background-color: var(--accent);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .order-list-container {
+    flex-direction: column;
+  }
+
+  .order-summery {
+    width: 100%;
+  }
+}

@@ -1,0 +1,20 @@
+.teaList-root{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+}
+
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    .teaList-root {
+        width: 90%;
+    }
+}
+
+@media (max-width: 480px) {
+    .teaList-root {
+        width: 90%;
+    }
+}

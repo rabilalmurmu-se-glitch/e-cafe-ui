@@ -1,0 +1,126 @@
+.tea-root {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--background, #f8f3ef);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 90%;
+    margin: 2rem auto;
+    gap: 2rem;
+}
+
+.tea-root:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* Image */
+.tea-left img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 14px;
+    border: 2px solid var(--brown-light, #d7bfae);
+}
+
+/* Right section */
+.tea-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    color: var(--text, #3e2f23);
+}
+
+.tea-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-family: "Playfair Display", serif;
+    color: var(--brown, #4a2c2a);
+}
+
+.tea-description {
+    font-size: 1rem;
+    line-height: 1.5;
+    opacity: 0.85;
+}
+
+/* Quantity selector */
+.tea-quantity {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.qty-btn {
+    background: var(--brown, #4a2c2a);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.qty-btn:hover {
+    background: var(--accent, #b27338);
+}
+
+.qty-value {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* Price */
+.tea-price {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent, #b27338);
+    margin-top: 0.5rem;
+}
+
+/* Button */
+.order-btn {
+    margin-top: 1rem;
+    align-self: start;
+    padding: 0.6rem 1.4rem;
+    background: var(--brown, #4a2c2a);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.order-btn:hover {
+    background: var(--accent, #b27338);
+    transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .tea-root {
+        flex-direction: column;
+        text-align: center;
+        width: 80%;
+    }
+
+    .tea-left img {
+        width: 150px;
+        height: 150px;
+    }
+
+    .order-btn {
+        align-self: center;
+    }
+
+    .tea-quantity {
+        justify-content: center;
+    }
+}

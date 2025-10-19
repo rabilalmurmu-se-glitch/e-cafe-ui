@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@400;600&display=swap&family=Dancing+Script:wght@500;700');
+
+
+:root {
+  /* E-Cafe Brand Colors */
+  --primary: #5C4033;        /* Deep mocha brown */
+  --secondary: #CBBBA0;      /* Soft latte cream */
+  --accent: #A67C52;         /* Warm caramel tone */
+
+  /* Text Colors */
+  --text-light: #F5F2ED;     /* Light cream text on dark bg */
+  --text-dark: #3B2F2F;      /* Espresso brown text on light bg */
+
+  /* Backgrounds */
+  --background: #FFF8F1;     /* Soft off-white background */
+
+  /* Status / Active */
+  --success: #8B6B4A;        /* Coffee bean brown for success states */
+}
+
+/* Example usage */
+body {
+  background-color: var(--secondary);
+  color: var(--text-dark);
+  font-family: 'Poppins', sans-serif; /* clean modern */
+}
+
+button {
+  background-color: var(--primary);
+  color: var(--text-light);
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--accent);
+}
+
+.fancy-text {
+  font-family: 'Dancing Script', serif; /* elegant café-style */
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary, #5c4033);
+  letter-spacing: 1px;
+}

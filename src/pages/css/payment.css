@@ -1,0 +1,88 @@
+.payment-root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 90vh;
+  padding: 20px;
+}
+
+.payment-container {
+  background: var(--background);
+  padding: 30px 40px;
+  border-radius: 16px;
+  width: 400px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.payment-container h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.payment-desc {
+  text-align: center;
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 25px;
+}
+
+.payment-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.payment-methods label {
+  font-size: 15px;
+  color: var(--text-dark);
+  cursor: pointer;
+}
+
+.card-form input,
+.upi-box input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid var(--text-light);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+.pay-btn {
+  background-color: var(--primary);
+  color: var(--text-light);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  width: 100%;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.pay-btn:hover {
+  background-color: var(--accent);
+}
+
+.upi-box,
+.cod-box {
+  text-align: center;
+}
+
+.upi-box p,
+.cod-box p {
+  color: #555;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+input:focus {
+  outline: 1px solid var(--accent);
+}
