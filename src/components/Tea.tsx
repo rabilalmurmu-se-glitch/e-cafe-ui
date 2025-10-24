@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import "./css/tea.css";
-import type { OrderType } from "../pages/Item";
 
 interface TeaProps {
+  itemId: number | string;
   name: string;
   description: string;
   price: number;
   image: string;
-  onOrder?: (details: OrderType) => void;
+  onOrder?: (details: any) => void;
   btnTitle: string;
-  onRemove?: () => void;
+  onRemove?: (id: string) => void;
+  quntt?: number;
 }
 
 const Tea: React.FC<TeaProps> = ({
@@ -20,28 +21,20 @@ const Tea: React.FC<TeaProps> = ({
   onOrder,
   btnTitle,
   onRemove,
+  itemId,
+  quntt,
 }) => {
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(quntt || 1);
 
   const handleIncrease = () => setQuantity((prev) => prev + 1);
   const handleDecrease = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   const handleOrder = () => {
     if (onOrder) {
-      onOrder({ name, quantity, totalPrice: price * quantity });
-      alert(
-        `You added ${quantity} cup${
-          quantity > 1 ? "s" : ""
-        } of ${name} to order list! ☕`
-      );
+      onOrder({ itemId, quantity });
     }
     if (onRemove) {
-      onRemove();
-      alert(
-        `You removed ${quantity} cup${
-          quantity > 1 ? "s" : ""
-        } of ${name} from order list! ☕`
-      );
+      onRemove(`${itemId}`);
     }
   };
 

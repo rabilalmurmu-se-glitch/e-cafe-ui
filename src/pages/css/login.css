@@ -1,0 +1,146 @@
+/* Full layout */
+.login-page {
+  display: flex;
+  height: 100%;
+  font-family: "Inter", sans-serif;
+  margin: 2rem;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Left column */
+.login-left {
+  flex: 1;
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-light);
+  text-align: center;
+  padding: 2rem;
+}
+
+.login-overlay {
+  max-width: 400px;
+}
+
+.login-overlay h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.login-overlay p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+/* Right column */
+.login-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: var(--background);
+  padding: 4rem;
+}
+
+.login-content {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Text */
+.login-content h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--text-dark);
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+/* Inputs */
+.input-group {
+  margin-bottom: 1.2rem;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  outline: none;
+  transition: 0.3s;
+}
+
+.input-group input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 5px rgba(91, 86, 50, 0.4);
+}
+
+/* Button */
+.login-btn {
+  width: 100%;
+  background: var(--primary);
+  color: var(--text-light);
+  padding: 0.9rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+}
+
+.login-btn:hover {
+  background: var(--accent);
+  transform: translateY(-2px);
+}
+
+/* Footer */
+.footer-text {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: #555;
+  text-align: center;
+}
+
+.footer-text a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.footer-text a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .login-page {
+    flex-direction: column;
+  }
+
+  .login-right {
+    padding: 2rem;
+    justify-content: center;
+  }
+
+  .login-left {
+    height: 220px;
+  }
+}

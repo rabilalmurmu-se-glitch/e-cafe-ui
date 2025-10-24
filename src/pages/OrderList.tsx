@@ -1,55 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TeaList from "./TeaList";
-import blackTea from "../assets/black-tea.jpg";
-import greenTea from "../assets/glass-green-tea.jpg";
-import masalaChai from "../assets/masala-tea.jpg";
 import "./css/orderList.css";
 import { Link } from "react-router-dom";
-
-interface TeaItem {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-}
-
-const initialTeas: TeaItem[] = [
-  {
-    id: "item1",
-    name: "Classic Black Tea",
-    description: "A bold and rich tea with a deep aroma and refreshing finish.",
-    price: 120,
-    image: blackTea,
-  },
-  {
-    id: "item2",
-    name: "Green Tea",
-    description:
-      "Light, fresh, and full of antioxidants — perfect for a healthy start.",
-    price: 150,
-    image: greenTea,
-  },
-  {
-    id: "item3",
-    name: "Masala Chai",
-    description:
-      "An aromatic blend of tea and Indian spices that warms your soul.",
-    price: 130,
-    image: masalaChai,
-  },
-];
+import { useUserStore } from "../store/useUserStore";
+import { getOrderListItems } from "../controllers/order";
+import { notifyError } from "../utils/Notify";
 
 const OrderList: React.FC = () => {
-  const [teas, setTeas] = useState<TeaItem[]>(initialTeas);
+  const { user } = useUserStore();
+  const [orderItems, setOrderItems] = useState<any[]>([]);
+  const [totalAmount, seTotalAmount] = useState<number>(0);
 
   const handleRemove = (id: string) => {
-    const updatedList = teas.filter((item) => item.id !== id);
-    setTeas(updatedList);
     console.log("Removed item ID:", id);
   };
 
-  const totalAmount = teas.reduce((sum, item) => sum + item.price, 0);
+  useEffect(() => {
+    async function fetchOrderItems(userId: number) {
+      const { error, message, data } = await getOrderListItems(userId);
+      if (error) {
+        notifyError(message);
+        return;
+      }
+
+      const listItems = data.data.map((d: any) => ({
+        ...d.item,
+        quantity: d.quantity,
+        total: +d.item.price * +d.quantity,
+      }));
+      console.log(listItems);
+      const total = listItems.reduce(
+        (sum: any, item: any) => sum + item.total,
+        0
+      );
+      seTotalAmount(total);
+      setOrderItems(listItems);
+    }
+
+    if (user?.id) fetchOrderItems(user.id);
+  }, [user]);
 
   return (
     <div className="Order-root">
@@ -58,10 +47,10 @@ const OrderList: React.FC = () => {
       <div className="order-list-container">
         {/* Left Section - Tea Items */}
         <div className="list">
-          {teas.length > 0 ? (
+          {orderItems?.length > 0 ? (
             <TeaList
               btnTitle="Remove"
-              teas={teas}
+              teas={orderItems}
               handleRemove={handleRemove}
             />
           ) : (
@@ -78,7 +67,7 @@ const OrderList: React.FC = () => {
             <div className="summery-details">
               <div className="summary-row">
                 <span>Items:</span>
-                <span>{teas.length}</span>
+                <span>{orderItems?.length}</span>
               </div>
               <div className="summary-row">
                 <span>Subtotal:</span>
@@ -86,7 +75,7 @@ const OrderList: React.FC = () => {
               </div>
               <div className="summary-row">
                 <span>Delivery:</span>
-                <span>₹{teas.length > 0 ? 40 : 0}</span>
+                <span>₹{orderItems?.length > 0 ? 40 : 0}</span>
               </div>
             </div>
 
@@ -94,7 +83,7 @@ const OrderList: React.FC = () => {
 
             <div className="total-order-amount">
               <span>Total:</span>
-              <span>₹{teas.length > 0 ? totalAmount + 40 : 0}</span>
+              <span>₹{orderItems?.length > 0 ? totalAmount + 40 : 0}</span>
             </div>
 
             <div className="checkout-btn">

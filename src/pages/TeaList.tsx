@@ -1,11 +1,10 @@
 import React from "react";
 import Tea from "../components/Tea";
-import type { OrderType } from "./Item";
 
 interface TeaListProps {
   teas: any[];
-  handleOrder?: (order: OrderType) => void;
-  handleRemove?: (id: string) => void;
+  handleOrder?: (order: any) => void;
+  handleRemove?: (id: any) => void;
   btnTitle: string;
 }
 
@@ -20,14 +19,15 @@ const TeaList: React.FC<TeaListProps> = ({
       {teas.map((tea) => (
         <Tea
           key={tea.id}
+          itemId={tea.id}
           name={tea.name}
           description={tea.description}
           price={tea.price}
-          image={tea.image}
+          image={tea.photo}
           onOrder={handleOrder}
-          // @ts-ignore
-          onRemove={() => handleRemove(tea.id)}
+          onRemove={handleRemove}
           btnTitle={btnTitle}
+          quntt={tea.quantity || 1}
         />
       ))}
     </div>

@@ -1,0 +1,200 @@
+/* Full layout */
+.signup-page {
+    display: flex;
+    height: 100%;
+    font-family: "Inter", sans-serif;
+    margin: 2rem;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Left column */
+.signup-left {
+    flex: 1;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-light);
+    text-align: center;
+    padding: 2rem;
+}
+
+.signup-overlay {
+    max-width: 400px;
+}
+
+.signup-overlay h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.signup-overlay p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+/* Right column */
+.signup-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background: var(--background);
+    padding: 4rem 6rem;
+}
+
+.signup-content {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Headings */
+.signup-content h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+}
+
+.subtitle {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+/* Inputs */
+.input-group {
+    margin-bottom: 1.2rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.3s;
+}
+
+.input-group input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 5px rgba(76, 66, 39, 0.4);
+}
+
+/* Button */
+.signup-btn {
+    width: 100%;
+    background: var(--primary);
+    color: var(--text-light);
+    padding: 0.9rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+}
+
+.signup-btn:hover {
+    background: var(--accent);
+    transform: translateY(-2px);
+}
+
+/* Footer */
+.footer-text {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: #555;
+    text-align: center;
+}
+
+.footer-text a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.footer-text a:hover {
+    text-decoration: underline;
+}
+
+/* Radio group container */
+.input-radio {
+    margin-bottom: 1.2rem;
+    text-align: left;
+}
+
+.radio-label {
+    display: block;
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+/* Radio buttons wrapper */
+.radio-options {
+    display: flex;
+    gap: 1.5rem;
+    /* space between Male/Female */
+}
+
+/* Individual radio item */
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.95rem;
+    color: #333;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Style for the input itself */
+.radio-option input[type="radio"] {
+    accent-color: var(--accent);
+    /* greenish tone matching signup */
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.radio-option input[type="radio"]:hover {
+    transform: scale(1.1);
+}
+
+/* Optional: improve touch on mobile */
+@media (max-width: 600px) {
+    .radio-options {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+}
+
+
+/* Responsive */
+@media (max-width: 900px) {
+    .signup-page {
+        flex-direction: column;
+    }
+
+    .signup-right {
+        padding: 2rem;
+        justify-content: center;
+    }
+
+    .signup-left {
+        height: 220px;
+    }
+}
