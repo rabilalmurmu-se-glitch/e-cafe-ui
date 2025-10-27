@@ -16,10 +16,10 @@ const TeaList: React.FC<TeaListProps> = ({
 }) => {
   return (
     <div className="teaList-root">
-      {teas.map((tea) => (
+      {teas.map((tea, index) => (
         <Tea
-          key={tea.id}
-          itemId={tea.id}
+          key={`tea${index}`}
+          itemId={tea?.id}
           name={tea.name}
           description={tea.description}
           price={tea.price}
@@ -27,7 +27,8 @@ const TeaList: React.FC<TeaListProps> = ({
           onOrder={handleOrder}
           onRemove={handleRemove}
           btnTitle={btnTitle}
-          quntt={tea.quantity || 1}
+          initialQuantity={tea.quantity || 1}
+          rowId={tea.rowId}
         />
       ))}
     </div>

@@ -1,45 +1,38 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import TeaList from "./TeaList";
 import "./css/orderList.css";
-import { Link } from "react-router-dom";
 import { useUserStore } from "../store/useUserStore";
-import { getOrderListItems } from "../controllers/order";
+import {
+  formatItemArray,
+  getOrderListItems,
+  handlePayment,
+  removeItemFromList,
+} from "../controllers/order";
 import { notifyError } from "../utils/Notify";
+import { useListItems } from "../store/useShopStore";
 
 const OrderList: React.FC = () => {
   const { user } = useUserStore();
-  const [orderItems, setOrderItems] = useState<any[]>([]);
-  const [totalAmount, seTotalAmount] = useState<number>(0);
+  const { items, subTotal, updateItems } = useListItems();
 
-  const handleRemove = (id: string) => {
-    console.log("Removed item ID:", id);
-  };
-
-  useEffect(() => {
-    async function fetchOrderItems(userId: number) {
+  const fetchOrderItems = useCallback(
+    async (userId: number) => {
       const { error, message, data } = await getOrderListItems(userId);
-      if (error) {
-        notifyError(message);
-        return;
-      }
-
-      const listItems = data.data.map((d: any) => ({
-        ...d.item,
-        quantity: d.quantity,
-        total: +d.item.price * +d.quantity,
-      }));
-      console.log(listItems);
-      const total = listItems.reduce(
-        (sum: any, item: any) => sum + item.total,
-        0
-      );
-      seTotalAmount(total);
-      setOrderItems(listItems);
-    }
-
+      if (error) return notifyError(message);
+      const { total, listItems } = await formatItemArray(data.data);
+      updateItems(listItems, total);
+    },
+    [updateItems]
+  );
+  const handleRemove = async (id: number) => {
+    console.log("Removed item ID:", id);
+    const { error, message } = await removeItemFromList(id);
+    if (error) return notifyError(message);
+    fetchOrderItems(user.id);
+  };
+  useEffect(() => {
     if (user?.id) fetchOrderItems(user.id);
-  }, [user]);
-
+  }, [user, fetchOrderItems]);
   return (
     <div className="Order-root">
       <div className="heading">Order List</div>
@@ -47,10 +40,10 @@ const OrderList: React.FC = () => {
       <div className="order-list-container">
         {/* Left Section - Tea Items */}
         <div className="list">
-          {orderItems?.length > 0 ? (
+          {items?.length > 0 ? (
             <TeaList
               btnTitle="Remove"
-              teas={orderItems}
+              teas={items}
               handleRemove={handleRemove}
             />
           ) : (
@@ -67,15 +60,15 @@ const OrderList: React.FC = () => {
             <div className="summery-details">
               <div className="summary-row">
                 <span>Items:</span>
-                <span>{orderItems?.length}</span>
+                <span>{items?.length}</span>
               </div>
               <div className="summary-row">
                 <span>Subtotal:</span>
-                <span>₹{totalAmount}</span>
+                <span>₹{subTotal}</span>
               </div>
               <div className="summary-row">
                 <span>Delivery:</span>
-                <span>₹{orderItems?.length > 0 ? 40 : 0}</span>
+                <span>₹{items?.length > 0 ? 40 : 0}</span>
               </div>
             </div>
 
@@ -83,13 +76,16 @@ const OrderList: React.FC = () => {
 
             <div className="total-order-amount">
               <span>Total:</span>
-              <span>₹{orderItems?.length > 0 ? totalAmount + 40 : 0}</span>
+              <span>₹{items?.length > 0 ? subTotal + 40 : 0}</span>
             </div>
 
             <div className="checkout-btn">
-              <Link to={"/payment"}>
-                <button>Checkout</button>
-              </Link>
+              <button>Pay on Delivery</button>
+              <button
+                onClick={() => items?.length && handlePayment(items[0].listId)}
+              >
+                Checkout
+              </button>
             </div>
           </div>
         </div>

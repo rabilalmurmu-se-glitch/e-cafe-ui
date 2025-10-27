@@ -1,8 +1,9 @@
 import { API } from "../utils/api";
+const shopId = import.meta.env.VITE_SHOP_ID;
 type IdType = string | number;
-export const getShopDetails = async (id: IdType) => {
+export const getShopDetails = async () => {
   try {
-    const response = await API.get("/shops/" + id);
+    const response = await API.get("/shops/" + shopId);
     return {
       success: true,
       data: response.data,
@@ -27,9 +28,9 @@ function groupByKey<T, K>(arr: T, key: K) {
   }, {});
 }
 
-export const getShopCategories = async (id: IdType) => {
+export const getShopCategories = async () => {
   try {
-    const response = await API.get("/categories/shop/" + id);
+    const response = await API.get("/categories/shop/" + shopId);
     const { data } = response;
     const groupByType = groupByKey<any[], string>(data, "type_id");
     const groupCat: any = {};
@@ -80,7 +81,7 @@ export const getTypeById = async (id: IdType) => {
   }
 };
 
-export const getShopItems = async (categoryId: IdType, shopId: IdType) => {
+export const getShopItems = async (categoryId: IdType) => {
   try {
     const response = await API.get(`/items/${shopId}/${categoryId}`);
     return {

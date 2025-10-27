@@ -22,7 +22,7 @@ const Item: React.FC = () => {
     }
     const { quantity, itemId } = order;
     const { error, message, data } = await addItemToOrderList({
-      userId: user.id,
+      userId: user?.id,
       item_id: itemId,
       quantity,
     });
@@ -42,7 +42,7 @@ const Item: React.FC = () => {
       try {
         const [categoryRes, itemsRes] = await Promise.all([
           getShopCategory(category_id),
-          getShopItems(category_id, 1),
+          getShopItems(category_id),
         ]);
 
         if (categoryRes.error) {
@@ -85,7 +85,7 @@ const Item: React.FC = () => {
 
   return (
     <div className="catalogs-root">
-      <div className="heading">{category.name}</div>
+      <div className="heading">{category?.name}</div>
 
       {items.length > 0 ? (
         <TeaList

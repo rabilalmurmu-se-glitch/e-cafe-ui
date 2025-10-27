@@ -6,6 +6,7 @@ import {
   FaLinkedinIn,
 } from "react-icons/fa";
 import "./css/footer.css";
+import { Link } from "react-router-dom";
 
 const Footer: React.FC = () => {
   return (
@@ -25,16 +26,13 @@ const Footer: React.FC = () => {
           <h3 className="footer-subtitle">Quick Links</h3>
           <ul className="footer-links">
             <li>
-              <a href="#">Home</a>
+              <Link to={"/"}>Home</Link>
             </li>
             <li>
-              <a href="#">Menu</a>
+              <Link to={"/about"}>About</Link>
             </li>
             <li>
-              <a href="#">About</a>
-            </li>
-            <li>
-              <a href="#">Contact</a>
+              <Link to={"/contact"}>Contact</Link>
             </li>
           </ul>
         </div>

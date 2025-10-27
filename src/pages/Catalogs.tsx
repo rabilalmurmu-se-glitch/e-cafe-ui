@@ -12,7 +12,7 @@ const Catalogs: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      const { error, message, data } = await getShopCategories(1);
+      const { error, message, data } = await getShopCategories();
       if (error) {
         notifyError(message || "Failed to load categories");
         return;

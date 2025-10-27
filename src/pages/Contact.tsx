@@ -27,7 +27,7 @@ const Contact: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      const { error, message, data } = await getShopDetails(1);
+      const { error, message, data } = await getShopDetails();
       if (error) {
         notifyError(message);
         return;

@@ -1,7 +1,7 @@
 import axios, { type AxiosInstance } from "axios";
 
 export const API: AxiosInstance = axios.create({
-  baseURL: "http://localhost:500/api/v1",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
 // Simple helper to get & set tokens
