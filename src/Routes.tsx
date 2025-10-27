@@ -8,6 +8,8 @@ import Profile from "./pages/Profile";
 import OrderList from "./pages/OrderList";
 import PaymentPage from "./pages/Payment";
 import OrderConfirmedPage from "./pages/OrderConfirmed";
+import Login from "./pages/Login";
+import Signup from "./pages/SignUp";
 
 export const routers = createBrowserRouter([
   {
@@ -19,7 +21,7 @@ export const routers = createBrowserRouter([
         element: <Catalogs />,
       },
       {
-        path: "tea/:item",
+        path: "tea/:category_id",
         element: <Item />,
       },
       {
@@ -45,6 +47,14 @@ export const routers = createBrowserRouter([
       {
         path: "order-confirmed",
         element: <OrderConfirmedPage />,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "sign-up",
+        element: <Signup />,
       },
     ],
   },

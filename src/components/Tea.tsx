@@ -1,55 +1,86 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import "./css/tea.css";
-import type { OrderType } from "../pages/Item";
+import {
+  formatItemArray,
+  getOrderListItems,
+  updateItemToOrderList,
+} from "../controllers/order";
+import { notifyError } from "../utils/Notify";
+import { useUserStore } from "../store/useUserStore";
+import { useListItems } from "../store/useShopStore";
 
 interface TeaProps {
+  itemId: number | string;
   name: string;
   description: string;
   price: number;
   image: string;
-  onOrder?: (details: OrderType) => void;
   btnTitle: string;
-  onRemove?: () => void;
+  initialQuantity?: number;
+  rowId?: number;
+  onOrder?: (details: { itemId: number | string; quantity: number }) => void;
+  onRemove?: (id: number) => void;
 }
 
 const Tea: React.FC<TeaProps> = ({
+  itemId,
   name,
   description,
   price,
   image,
-  onOrder,
   btnTitle,
+  initialQuantity = 1,
+  rowId,
+  onOrder,
   onRemove,
 }) => {
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(initialQuantity);
+  const { user } = useUserStore();
+  const { updateItems } = useListItems();
 
-  const handleIncrease = () => setQuantity((prev) => prev + 1);
-  const handleDecrease = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  const refreshOrderList = useCallback(async () => {
+    const { error, message, data } = await getOrderListItems(user.id);
+    if (error) return notifyError(message);
+    const { total, listItems } = await formatItemArray(data.data);
+    updateItems(listItems, total);
+  }, [user?.id, updateItems]);
+
+  const handleListItemUpdate = useCallback(
+    async (newQuantity: number) => {
+      const { error, message } = await updateItemToOrderList({
+        quantity: newQuantity,
+        id: rowId as number,
+      });
+      if (error) return notifyError(message);
+      await refreshOrderList();
+    },
+    [rowId, refreshOrderList]
+  );
+
+  const handleIncrease = async () => {
+    const newQuantity = quantity + 1;
+    setQuantity(newQuantity);
+    if (rowId) await handleListItemUpdate(newQuantity);
+  };
+
+  const handleDecrease = async () => {
+    if (quantity > 1) {
+      const newQuantity = quantity - 1;
+      setQuantity(newQuantity);
+      if (rowId) await handleListItemUpdate(newQuantity);
+    }
+  };
 
   const handleOrder = () => {
-    if (onOrder) {
-      onOrder({ name, quantity, totalPrice: price * quantity });
-      alert(
-        `You added ${quantity} cup${
-          quantity > 1 ? "s" : ""
-        } of ${name} to order list! ☕`
-      );
-    }
-    if (onRemove) {
-      onRemove();
-      alert(
-        `You removed ${quantity} cup${
-          quantity > 1 ? "s" : ""
-        } of ${name} from order list! ☕`
-      );
-    }
+    onOrder?.({ itemId, quantity });
+    onRemove?.(Number(rowId));
   };
 
   return (
     <div className="tea-root">
       {/* Left section - image */}
       <div className="tea-left">
-        <img src={image} alt={name} />
+        <img src={image} alt={name} loading="lazy" />
       </div>
 
       {/* Right section - details */}
@@ -59,18 +90,27 @@ const Tea: React.FC<TeaProps> = ({
 
         {/* Quantity selector */}
         <div className="tea-quantity">
-          <button className="qty-btn" onClick={handleDecrease}>
+          <button
+            className="qty-btn"
+            onClick={handleDecrease}
+            aria-label="Decrease quantity"
+          >
             −
           </button>
           <span className="qty-value">{quantity}</span>
-          <button className="qty-btn" onClick={handleIncrease}>
+          <button
+            className="qty-btn"
+            onClick={handleIncrease}
+            aria-label="Increase quantity"
+          >
             +
           </button>
         </div>
 
         {/* Price display */}
         <div className="tea-price">
-          ₹{price * quantity} / {quantity} cup{quantity > 1 ? "s" : ""}
+          ₹{Number.isFinite(price) ? price * quantity : 0} / {quantity} cup
+          {quantity > 1 ? "s" : ""}
         </div>
 
         {/* Order button */}

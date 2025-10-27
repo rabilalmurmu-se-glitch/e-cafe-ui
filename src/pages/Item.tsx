@@ -1,50 +1,101 @@
-import React from "react";
-import withBanner from "../HOC/WithBanner";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import withBanner from "../HOC/WithBanner";
+import { getShopCategory, getShopItems } from "../controllers/shop";
+import { notifyError, notifySuccess } from "../utils/Notify";
 import TeaList from "./TeaList";
-import blackTea from "../assets/black-tea.jpg";
-import greenTea from "../assets/glass-green-tea.jpg";
-import masalaChai from "../assets/masala-tea.jpg";
+import { useUserStore } from "../store/useUserStore";
+import { addItemToOrderList } from "../controllers/order";
 
-const teas = [
-  {
-    name: "Classic Black Tea",
-    description: "A bold and rich tea with a deep aroma and refreshing finish.",
-    price: 120,
-    image: blackTea,
-    id: "item1",
-  },
-  {
-    name: "Green Tea",
-    description:
-      "Light, fresh, and full of antioxidants — perfect for a healthy start.",
-    price: 150,
-    image: greenTea,
-    id: "item2",
-  },
-  {
-    name: "Masala Chai",
-    description:
-      "An aromatic blend of tea and Indian spices that warms your soul.",
-    price: 130,
-    image: masalaChai,
-    id: "item3",
-  },
-];
-export interface OrderType {
-  name: string;
-  quantity: number;
-  totalPrice: number;
-}
 const Item: React.FC = () => {
-  const history = useParams();
-  const handleOrder = (order: OrderType) => {
-    console.log("Order details:", order);
+  const { user } = useUserStore();
+  const { category_id } = useParams<{ category_id: string }>();
+  const [category, setCategory] = useState<any>(null);
+  const [items, setItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const handleOrder = async (order: any) => {
+    console.log("Order details =>", order);
+    if (!user?.id) {
+      notifyError("Please login first then try again thankyou");
+      return;
+    }
+    const { quantity, itemId } = order;
+    const { error, message, data } = await addItemToOrderList({
+      userId: user?.id,
+      item_id: itemId,
+      quantity,
+    });
+    if (error) {
+      notifyError(message);
+      return;
+    }
+    console.log(data);
+    notifySuccess("Item added to list successfully!");
   };
+
+  useEffect(() => {
+    if (!category_id) return;
+
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const [categoryRes, itemsRes] = await Promise.all([
+          getShopCategory(category_id),
+          getShopItems(category_id),
+        ]);
+
+        if (categoryRes.error) {
+          notifyError(categoryRes.message || "Failed to fetch category");
+          return;
+        }
+        if (itemsRes.error) {
+          notifyError(itemsRes.message || "Failed to fetch items");
+          return;
+        }
+
+        setCategory(categoryRes.data?.data || null);
+        setItems(itemsRes.data || []);
+      } catch (err) {
+        console.error(err);
+        notifyError("Something went wrong while fetching data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [category_id]);
+
+  if (loading) {
+    return (
+      <div className="catalogs-root">
+        <div className="loading">Loading items...</div>
+      </div>
+    );
+  }
+
+  if (!category) {
+    return (
+      <div className="catalogs-root">
+        <div className="error-message">Category not found</div>
+      </div>
+    );
+  }
+
   return (
     <div className="catalogs-root">
-      <div className="heading">{history.item}</div>
-      <TeaList btnTitle="Add to list" teas={teas} handleOrder={handleOrder} />
+      <div className="heading">{category?.name}</div>
+
+      {items.length > 0 ? (
+        <TeaList
+          btnTitle="Add to list"
+          teas={items}
+          handleOrder={handleOrder}
+        />
+      ) : (
+        <div className="empty-message">No items available in this category</div>
+      )}
     </div>
   );
 };

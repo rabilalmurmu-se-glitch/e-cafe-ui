@@ -1,13 +1,22 @@
 import React, { useState } from "react";
 import logo from "../assets/logo.png";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
 import { LuClipboardList } from "react-icons/lu";
 import { PiListChecksFill } from "react-icons/pi";
+import { useUserStore } from "../store/useUserStore";
 
 const Header: React.FC = () => {
+  const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
   const showHideMenuItem = () => setShowMenu((current) => !current);
+  const { user, clearUser } = useUserStore();
+  const handleLoginLogout = (action: "login" | "logout") => {
+    showHideMenuItem();
+    if (action === "login") return navigate("/login");
+    clearUser();
+    navigate("/");
+  };
   return (
     <div className="header-root">
       <div className="logo">
@@ -19,8 +28,17 @@ const Header: React.FC = () => {
         <NavLink to={"/contact"}>Contact</NavLink>
       </div>
       <div onClick={showHideMenuItem} className="user-info">
-        <div className="avatar">U</div>
-        <div className="user-name">User Name</div>
+        {!user ? (
+          <>
+            <div className="avatar">G</div>
+            <div className="user-name">Guest User</div>
+          </>
+        ) : (
+          <>
+            <div className="avatar">{user?.name[0]?.toUpperCase()}</div>
+            <div className="user-name">{user?.name}</div>
+          </>
+        )}
       </div>
       <div className={`profile-box ${showMenu ? "show" : "hidden"}`}>
         <NavLink onClick={showHideMenuItem} to={"/profile"}>
@@ -40,7 +58,11 @@ const Header: React.FC = () => {
           <div className="title">Order history list</div>
         </div>
         <div className="logout">
-          <button>LOGOUT</button>
+          {!user ? (
+            <button onClick={() => handleLoginLogout("login")}>LOGIN</button>
+          ) : (
+            <button onClick={() => handleLoginLogout("logout")}>LOGOUT</button>
+          )}
         </div>
       </div>
     </div>
