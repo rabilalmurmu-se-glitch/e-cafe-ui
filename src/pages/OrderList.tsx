@@ -1,56 +1,38 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import TeaList from "./TeaList";
-import blackTea from "../assets/black-tea.jpg";
-import greenTea from "../assets/glass-green-tea.jpg";
-import masalaChai from "../assets/masala-tea.jpg";
 import "./css/orderList.css";
-import { Link } from "react-router-dom";
-
-interface TeaItem {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-}
-
-const initialTeas: TeaItem[] = [
-  {
-    id: "item1",
-    name: "Classic Black Tea",
-    description: "A bold and rich tea with a deep aroma and refreshing finish.",
-    price: 120,
-    image: blackTea,
-  },
-  {
-    id: "item2",
-    name: "Green Tea",
-    description:
-      "Light, fresh, and full of antioxidants — perfect for a healthy start.",
-    price: 150,
-    image: greenTea,
-  },
-  {
-    id: "item3",
-    name: "Masala Chai",
-    description:
-      "An aromatic blend of tea and Indian spices that warms your soul.",
-    price: 130,
-    image: masalaChai,
-  },
-];
+import { useUserStore } from "../store/useUserStore";
+import {
+  formatItemArray,
+  getOrderListItems,
+  handlePayment,
+  removeItemFromList,
+} from "../controllers/order";
+import { notifyError } from "../utils/Notify";
+import { useListItems } from "../store/useShopStore";
 
 const OrderList: React.FC = () => {
-  const [teas, setTeas] = useState<TeaItem[]>(initialTeas);
+  const { user } = useUserStore();
+  const { items, subTotal, updateItems } = useListItems();
 
-  const handleRemove = (id: string) => {
-    const updatedList = teas.filter((item) => item.id !== id);
-    setTeas(updatedList);
+  const fetchOrderItems = useCallback(
+    async (userId: number) => {
+      const { error, message, data } = await getOrderListItems(userId);
+      if (error) return notifyError(message);
+      const { total, listItems } = await formatItemArray(data.data);
+      updateItems(listItems, total);
+    },
+    [updateItems]
+  );
+  const handleRemove = async (id: number) => {
     console.log("Removed item ID:", id);
+    const { error, message } = await removeItemFromList(id);
+    if (error) return notifyError(message);
+    fetchOrderItems(user.id);
   };
-
-  const totalAmount = teas.reduce((sum, item) => sum + item.price, 0);
-
+  useEffect(() => {
+    if (user?.id) fetchOrderItems(user.id);
+  }, [user, fetchOrderItems]);
   return (
     <div className="Order-root">
       <div className="heading">Order List</div>
@@ -58,10 +40,10 @@ const OrderList: React.FC = () => {
       <div className="order-list-container">
         {/* Left Section - Tea Items */}
         <div className="list">
-          {teas.length > 0 ? (
+          {items?.length > 0 ? (
             <TeaList
               btnTitle="Remove"
-              teas={teas}
+              teas={items}
               handleRemove={handleRemove}
             />
           ) : (
@@ -78,15 +60,15 @@ const OrderList: React.FC = () => {
             <div className="summery-details">
               <div className="summary-row">
                 <span>Items:</span>
-                <span>{teas.length}</span>
+                <span>{items?.length}</span>
               </div>
               <div className="summary-row">
                 <span>Subtotal:</span>
-                <span>₹{totalAmount}</span>
+                <span>₹{subTotal}</span>
               </div>
               <div className="summary-row">
                 <span>Delivery:</span>
-                <span>₹{teas.length > 0 ? 40 : 0}</span>
+                <span>₹{items?.length > 0 ? 40 : 0}</span>
               </div>
             </div>
 
@@ -94,13 +76,16 @@ const OrderList: React.FC = () => {
 
             <div className="total-order-amount">
               <span>Total:</span>
-              <span>₹{teas.length > 0 ? totalAmount + 40 : 0}</span>
+              <span>₹{items?.length > 0 ? subTotal + 40 : 0}</span>
             </div>
 
             <div className="checkout-btn">
-              <Link to={"/payment"}>
-                <button>Checkout</button>
-              </Link>
+              <button>Pay on Delivery</button>
+              <button
+                onClick={() => items?.length && handlePayment(items[0].listId)}
+              >
+                Checkout
+              </button>
             </div>
           </div>
         </div>

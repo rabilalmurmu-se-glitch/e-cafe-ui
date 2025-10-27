@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./css/contact.css";
+import { notifyError } from "../utils/Notify";
+import { getShopDetails } from "../controllers/shop";
 
 const Contact: React.FC = () => {
+  const [shop, setShop] = useState<any>();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -18,6 +24,18 @@ const Contact: React.FC = () => {
     alert("Message sent successfully!");
     setFormData({ name: "", email: "", message: "" });
   };
+
+  useEffect(() => {
+    (async () => {
+      const { error, message, data } = await getShopDetails();
+      if (error) {
+        notifyError(message);
+        return;
+      }
+      console.log(data);
+      setShop(data.data);
+    })();
+  }, []);
 
   return (
     <div className="contact-page">
@@ -68,9 +86,9 @@ const Contact: React.FC = () => {
         {/* Contact Info */}
         <div className="contact-info">
           <h2>Get in Touch</h2>
-          <p>Email: support@e-cafe.com</p>
-          <p>Phone: +91 123 456 7890</p>
-          <p>Address: 123 Tea Street, Kolkata, India</p>
+          <p>Email: {!shop ? "Loading...." : shop.email}</p>
+          <p>Phone: {!shop ? "Loading...." : shop.phone}</p>
+          <p>Address: {!shop ? "Loading...." : shop.address}</p>
         </div>
       </div>
     </div>

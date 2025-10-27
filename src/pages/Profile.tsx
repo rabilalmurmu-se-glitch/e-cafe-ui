@@ -1,16 +1,67 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./css/profile.css";
-import defaultAvatar from "../assets/roast-coffee.jpg"; // Replace with your image
+import defaultAvatar from "../assets/roast-coffee.jpg";
+import { useUserStore } from "../store/useUserStore";
+import { getUserById, UpdateProfileInfo } from "../controllers/user";
+import { notifyError, notifySuccess } from "../utils/Notify";
+import { formatDate } from "../utils/formatDate";
 
 const Profile: React.FC = () => {
-  const [about, setAbout] = useState(
-    "Tea enthusiast and lover of cozy moments. Exploring flavors, one cup at a time."
-  );
+  const { user } = useUserStore();
+  const [userData, setUserData] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [tempAbout, setTempAbout] = useState(about);
+  const [tempAbout, setTempAbout] = useState("");
 
-  const handleSave = () => {
-    setAbout(tempAbout);
+  const isGuest = !user; // true when no logged-in user
+
+  useEffect(() => {
+    if (!user) return; // guest user → skip fetching
+
+    (async () => {
+      try {
+        const { error, message, data } = await getUserById(
+          user.id || user.userId
+        );
+        if (error) {
+          notifyError(message || "Failed to load profile");
+          return;
+        }
+
+        setUserData(data.data);
+        setTempAbout(data.data.about || "");
+        notifySuccess("Profile loaded successfully");
+      } catch (err) {
+        console.error(err);
+        notifyError("Something went wrong while loading profile");
+      }
+    })();
+  }, [user]); // re-fetch when logged-in user changes
+
+  const handleSave = async () => {
+    if (isGuest || !userData) return;
+
+    try {
+      const { error, message, data } = await UpdateProfileInfo(
+        { about: tempAbout },
+        userData.userId || userData.id
+      );
+
+      if (error) {
+        notifyError(message || "Failed to update profile");
+        return;
+      }
+
+      notifySuccess("Profile updated successfully");
+      setUserData(data.data);
+      setIsEditing(false);
+    } catch (err) {
+      console.error(err);
+      notifyError("Something went wrong while updating profile");
+    }
+  };
+
+  const handleCancel = () => {
+    setTempAbout(userData?.about || "");
     setIsEditing(false);
   };
 
@@ -20,50 +71,71 @@ const Profile: React.FC = () => {
         {/* Profile Header */}
         <div className="profile-header">
           <img src={defaultAvatar} alt="Profile" className="profile-img" />
-          <h2 className="profile-name">Rabilal Murmu</h2>
-          <p className="profile-role">Founder & CEO, E-Cafe</p>
+          <h2 className="profile-name">
+            {isGuest ? "Guest User" : userData?.name || "Loading..."}
+          </h2>
+          <p className="profile-role">
+            {isGuest ? "Visitor" : `${userData?.role || "Member"}, E-Cafe`}
+          </p>
         </div>
 
         {/* Profile Info */}
         <div className="profile-info">
           <h3>Account Details</h3>
           <ul>
-            <li>
-              <strong>Email:</strong> rabilal@example.com
-            </li>
-            <li>
-              <strong>Joined:</strong> October 2025
-            </li>
-            <li>
-              <strong>Location:</strong> Kolkata, India
-            </li>
+            {isGuest ? (
+              <>
+                <li>
+                  <strong>Email:</strong> Not logged in
+                </li>
+                <li>
+                  <strong>Status:</strong> Guest Mode
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <strong>Email:</strong> {userData?.email}
+                </li>
+                <li>
+                  <strong>Joined:</strong> {formatDate(userData?.createdAt)}
+                </li>
+                <li>
+                  <strong>Location:</strong>{" "}
+                  {userData?.address || "Kolkata, India"}
+                </li>
+              </>
+            )}
           </ul>
         </div>
 
         {/* About Section */}
         <div className="profile-about">
           <h3>About Me</h3>
-          {isEditing ? (
+
+          {isGuest ? (
+            <p>
+              Welcome to E-Cafe! Please sign in to personalize your profile.
+            </p>
+          ) : isEditing ? (
             <>
               <textarea
                 value={tempAbout}
                 onChange={(e) => setTempAbout(e.target.value)}
+                placeholder="Write something about yourself..."
               />
               <div className="btn-group">
                 <button className="save-btn" onClick={handleSave}>
                   Save
                 </button>
-                <button
-                  className="cancel-btn"
-                  onClick={() => setIsEditing(false)}
-                >
+                <button className="cancel-btn" onClick={handleCancel}>
                   Cancel
                 </button>
               </div>
             </>
           ) : (
             <>
-              <p>{about}</p>
+              <p>{userData?.about || "No description yet."}</p>
               <button className="edit-btn" onClick={() => setIsEditing(true)}>
                 Edit
               </button>
@@ -74,15 +146,15 @@ const Profile: React.FC = () => {
         {/* Stats Section */}
         <div className="profile-stats">
           <div className="stat">
-            <h4>52</h4>
+            <h4>{isGuest ? "—" : userData?.ordersCount ?? 52}</h4>
             <p>Orders</p>
           </div>
           <div className="stat">
-            <h4>12</h4>
+            <h4>{isGuest ? "—" : userData?.favoritesCount ?? 12}</h4>
             <p>Favorites</p>
           </div>
           <div className="stat">
-            <h4>4.9★</h4>
+            <h4>{isGuest ? "—" : userData?.rating ?? "4.9★"}</h4>
             <p>Rating</p>
           </div>
         </div>

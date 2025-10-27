@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./css/payment.css";
+import { useUserStore } from "../store/useUserStore";
+import { formatItemArray, getOrderListItems } from "../controllers/order";
+import { notifyError } from "../utils/Notify";
 
 const PaymentPage: React.FC = () => {
+  const { user } = useUserStore();
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [cardDetails, setCardDetails] = useState({
     name: "",
@@ -14,12 +18,23 @@ const PaymentPage: React.FC = () => {
     const { name, value } = e.target;
     setCardDetails((prev) => ({ ...prev, [name]: value }));
   };
-
+  console.log(user);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     alert("Payment successful! Redirecting to confirmation page...");
     window.location.href = "/order-confirmed";
   };
+
+  async function getOrderItems() {
+    const { error, message, data } = await getOrderListItems(user?.id);
+    if (error) return notifyError(message);
+    const formatedData = await formatItemArray(data.data);
+    console.log(formatedData);
+  }
+
+  useEffect(() => {
+    if (user?.id) getOrderItems();
+  }, [user]);
 
   return (
     <div className="payment-root">
