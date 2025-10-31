@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import TeaList from "./TeaList";
 import "./css/orderList.css";
 import { useUserStore } from "../store/useUserStore";
@@ -24,7 +24,7 @@ const OrderList: React.FC = () => {
     },
     [updateItems]
   );
-  
+
   const handleRemove = async (id: number) => {
     console.log("Removed item ID:", id);
     const { error, message } = await removeItemFromList(id);
