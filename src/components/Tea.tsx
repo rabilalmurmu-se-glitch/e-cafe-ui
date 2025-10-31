@@ -7,7 +7,7 @@ import {
 } from "../controllers/order";
 import { notifyError } from "../utils/Notify";
 import { useUserStore } from "../store/useUserStore";
-import { useListItems } from "../store/useShopStore";
+import { useShopStore } from "../store/useShopStore";
 
 interface TeaProps {
   itemId: number | string;
@@ -36,13 +36,13 @@ const Tea: React.FC<TeaProps> = ({
 }) => {
   const [quantity, setQuantity] = useState(initialQuantity);
   const { user } = useUserStore();
-  const { updateItems } = useListItems();
+  const { updateItems } = useShopStore();
 
   const refreshOrderList = useCallback(async () => {
     const { error, message, data } = await getOrderListItems(user.id);
     if (error) return notifyError(message);
     const { total, listItems } = await formatItemArray(data.data);
-    updateItems(listItems, total);
+    updateItems({ data: listItems, total });
   }, [user?.id, updateItems]);
 
   const handleListItemUpdate = useCallback(

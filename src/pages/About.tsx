@@ -1,36 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./css/about.css";
 import team1 from "../assets/black-tea.jpg"; // Replace with your team images
 import team2 from "../assets/glass-green-tea.jpg";
 import team3 from "../assets/spacial-coffee.jpg";
-import { getShopDetails } from "../controllers/shop";
-import { notifyError } from "../utils/Notify";
+import { useShopStore } from "../store/useShopStore";
 
 const About: React.FC = () => {
-  const [shop, setShop] = useState<any>();
-  useEffect(() => {
-    (async () => {
-      const { error, message, data } = await getShopDetails();
-      if (error) {
-        notifyError(message);
-        return;
-      }
-      console.log(data);
-      setShop(data.data);
-    })();
-  }, []);
+  const { shopInfo } = useShopStore();
   return (
     <div className="about-page">
       {/* Hero Section */}
       <section className="about-hero">
         <h1>About E-Cafe</h1>
-        <p>{!shop ? "Loading...." : shop.about_shop}</p>
+        <p>{!shopInfo ? "Loading...." : shopInfo.about_shop}</p>
       </section>
 
       {/* Mission Section */}
       <section className="about-mission">
         <h2>Our Mission</h2>
-        <p>{!shop ? "Loading...." : shop.shop_mission}</p>
+        <p>{!shopInfo ? "Loading...." : shopInfo.shop_mission}</p>
       </section>
 
       {/* Team Section */}

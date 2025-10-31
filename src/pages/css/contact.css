@@ -78,7 +78,7 @@
   background-color: var(--background);
   padding: 25px;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .contact-info h2 {
@@ -95,8 +95,21 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  .contact-page {
+    padding: 40px 10px;
+  }
   .contact-container {
     flex-direction: column;
     align-items: center;
+    width: 100%;
+  }
+
+  .contact-form {
+    flex: 1 1 300px;
+    width: 100%;
+  }
+  .contact-info {
+    flex: 1 1 300px;
+    width: 100%;
   }
 }

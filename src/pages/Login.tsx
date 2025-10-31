@@ -12,13 +12,11 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Login Attempt:", { email, password });
     const { error, data, message } = await login({ email, password });
     if (error) {
       notifyError(message);
       return;
     }
-    console.log(data.data);
     notifySuccess("Login success!");
     setUser(data.data);
     setTimeout(() => (location.href = "/"), 1000);
@@ -31,8 +29,7 @@ const Login: React.FC = () => {
         <div className="login-overlay">
           <h1>Welcome Back 👋</h1>
           <p>
-            Manage your projects and collaborate with your team — all in one
-            place.
+            To keep connected with us please login with your personal info.
           </p>
         </div>
       </div>

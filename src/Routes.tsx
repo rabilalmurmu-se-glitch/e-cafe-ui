@@ -10,6 +10,7 @@ import PaymentPage from "./pages/Payment";
 import OrderConfirmedPage from "./pages/OrderConfirmed";
 import Login from "./pages/Login";
 import Signup from "./pages/SignUp";
+import OrderHistory from "./pages/OrderHistory";
 
 export const routers = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ export const routers = createBrowserRouter([
       {
         path: "order-list",
         element: <OrderList />,
+      },
+      {
+        path: "order-history",
+        element: <OrderHistory />,
       },
       {
         path: "payment",

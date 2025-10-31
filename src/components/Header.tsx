@@ -1,31 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../assets/logo.png";
 import { NavLink, useNavigate } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
-import { LuClipboardList } from "react-icons/lu";
-import { PiListChecksFill } from "react-icons/pi";
 import { useUserStore } from "../store/useUserStore";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
-  const showHideMenuItem = () => setShowMenu((current) => !current);
   const { user, clearUser } = useUserStore();
+
+  const showHideMenuItem = () => setShowMenu((current) => !current);
   const handleLoginLogout = (action: "login" | "logout") => {
     showHideMenuItem();
     if (action === "login") return navigate("/login");
     clearUser();
     navigate("/");
   };
+  
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest(".user-info") && !target.closest(".profile-box")) {
+        setShowMenu(false);
+      }
+    };
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
   return (
     <div className="header-root">
       <div className="logo">
         <img src={logo} alt="LOGO" />
       </div>
       <div className="menu">
-        <NavLink to={"/"}>Home</NavLink>
-        <NavLink to={"/about"}>About</NavLink>
-        <NavLink to={"/contact"}>Contact</NavLink>
+        <NavLink to={"/"}>Cafe</NavLink>
+        <NavLink to={"/order-list"}>List</NavLink>
+        <NavLink to={"/order-history"}>Orders</NavLink>
       </div>
       <div onClick={showHideMenuItem} className="user-info">
         {!user ? (
@@ -47,16 +59,6 @@ const Header: React.FC = () => {
             <div className="title">Profile</div>
           </div>
         </NavLink>
-        <NavLink onClick={showHideMenuItem} to={"/order-list"}>
-          <div className="menu-item">
-            <LuClipboardList size={20} />
-            <div className="title">Order list</div>
-          </div>
-        </NavLink>
-        <div className="menu-item">
-          <PiListChecksFill size={20} />
-          <div className="title">Order history list</div>
-        </div>
         <div className="logout">
           {!user ? (
             <button onClick={() => handleLoginLogout("login")}>LOGIN</button>

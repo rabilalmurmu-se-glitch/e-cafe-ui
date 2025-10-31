@@ -22,7 +22,6 @@ export type UpdateUser = Partial<CreateUser>;
 export const login = async (data: Login) => {
   try {
     const response = await API.post("/users/login", data);
-    console.log(response.data);
     return {
       success: true,
       data: response.data,
@@ -37,7 +36,6 @@ export const login = async (data: Login) => {
 export const signup = async (data: SignUp) => {
   try {
     const response = await API.post("/users/registration", data);
-    console.log(response.data);
     return {
       success: true,
       data: response.data,

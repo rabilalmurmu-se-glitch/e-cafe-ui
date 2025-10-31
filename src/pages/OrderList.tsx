@@ -5,34 +5,74 @@ import { useUserStore } from "../store/useUserStore";
 import {
   formatItemArray,
   getOrderListItems,
-  handlePayment,
+  PlaceOrder,
   removeItemFromList,
 } from "../controllers/order";
-import { notifyError } from "../utils/Notify";
-import { useListItems } from "../store/useShopStore";
+import { notifyError, notifySuccess } from "../utils/Notify";
+import { useShopStore } from "../store/useShopStore";
 
 const OrderList: React.FC = () => {
   const { user } = useUserStore();
-  const { items, subTotal, updateItems } = useListItems();
+  const { items, subTotal, updateItems, shopInfo } = useShopStore();
 
   const fetchOrderItems = useCallback(
     async (userId: number) => {
       const { error, message, data } = await getOrderListItems(userId);
       if (error) return notifyError(message);
       const { total, listItems } = await formatItemArray(data.data);
-      updateItems(listItems, total);
+      updateItems({ data: listItems, total });
     },
     [updateItems]
   );
+
   const handleRemove = async (id: number) => {
-    console.log("Removed item ID:", id);
     const { error, message } = await removeItemFromList(id);
     if (error) return notifyError(message);
     fetchOrderItems(user.id);
   };
+
   useEffect(() => {
     if (user?.id) fetchOrderItems(user.id);
   }, [user, fetchOrderItems]);
+
+  const handlePlaceOrder = async (type: string) => {
+    if (!user?.id)
+      return alert(
+        "Oops! 🫢, You haven't login yet, to place an order you have to login first."
+      );
+    if (items?.length === 0)
+      return alert("Ahh haa 🙄, Your list is empty, add items first.");
+
+    const tableNumber = prompt("Enter your table number (for dine-in orders):");
+    if (!tableNumber) {
+      alert("🙄 Table number is required to place the order.");
+      return;
+    }
+    if (
+      tableNumber.trim() === "" ||
+      isNaN(Number(tableNumber)) ||
+      Number(tableNumber) <= 0 ||
+      Number(tableNumber) > (shopInfo?.max_table || 100)
+    ) {
+      alert(
+        `🙄 Table number must be a valid number between 1 and ${
+          shopInfo?.max_table || 100
+        }.`
+      );
+      return;
+    }
+
+    const result = await PlaceOrder(
+      items[0].listId,
+      type,
+      user.id,
+      tableNumber
+    );
+    if (!result) return;
+    if (result.error) return notifyError(result.message);
+    if (result.success)
+      return notifySuccess("😊 Your order has been placed succefully!");
+  };
   return (
     <div className="Order-root">
       <div className="heading">Order List</div>
@@ -80,10 +120,10 @@ const OrderList: React.FC = () => {
             </div>
 
             <div className="checkout-btn">
-              <button>Pay on Delivery</button>
-              <button
-                onClick={() => items?.length && handlePayment(items[0].listId)}
-              >
+              <button onClick={() => handlePlaceOrder("POSTPAID")}>
+                Pay on Delivery
+              </button>
+              <button onClick={() => handlePlaceOrder("PREPAID")}>
                 Checkout
               </button>
             </div>

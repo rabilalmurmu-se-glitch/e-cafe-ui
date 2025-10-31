@@ -95,3 +95,18 @@ export const getShopItems = async (categoryId: IdType) => {
     };
   }
 };
+
+export const createLead = async (leadData: Record<string, any>) => {
+  try {
+    const response = await API.post("/leads", leadData);
+    return {
+      success: true,
+      data: response.data,
+    };
+  } catch (error: any) {
+    return {
+      error: true,
+      message: error?.message || "Oops - Somthing went wrong.",
+    };
+  }
+};
