@@ -31,8 +31,7 @@ const Login: React.FC = () => {
         <div className="login-overlay">
           <h1>Welcome Back 👋</h1>
           <p>
-            Manage your projects and collaborate with your team — all in one
-            place.
+            To keep connected with us please login with your personal info.
           </p>
         </div>
       </div>

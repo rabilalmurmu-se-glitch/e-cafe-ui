@@ -77,42 +77,113 @@ export const getOrderListItems = async (userId: number) => {
   }
 };
 
-export const handlePayment = async (orderListId: number) => {
+export const PlaceOrder = async (
+  orderListId: number,
+  modOfPay: string,
+  user_id: number,
+  tableNumber: string
+) => {
   // 1. Create order from backend
-  const response = await API.post("/payment/create-order", { orderListId });
+  try {
+    const response = await API.post("/orders/create-order", {
+      orderListId,
+      modOfPay,
+      user_id,
+      tableNumber
+    });
 
-  const { data } = response.data;
+    const { data } = response.data;
+    if (modOfPay === "POSTPAID") {
+      return {
+        success: true,
+        data: response.data,
+      };
+    }
+    console.log(data);
+    // 2. Razorpay options
+    const options = {
+      key: "rzp_test_RY4nlFOyQAnYq8", // replace with your Razorpay key_id
+      amount: data.razorOrder.amount,
+      currency: data.razorOrder.currency,
+      name: "E-Cafe",
+      description: "Test Transaction",
+      order_id: data.razorOrder.id,
+      handler: async function (response: any) {
+        alert("Payment successful!");
 
-  // 2. Razorpay options
-  const options = {
-    key: "rzp_test_RY4nlFOyQAnYq8", // replace with your Razorpay key_id
-    amount: data.amount,
-    currency: data.currency,
-    name: "E-Cafe",
-    description: "Test Transaction",
-    order_id: data.id,
-    handler: async function (response: any) {
-      alert("Payment successful!");
+        console.log(response);
+        // 3. Verify payment
+        const verify = await API.post("/orders/verify-order", response);
 
-      console.log(response);
-      // 3. Verify payment
-      const verify = await API.post("/payment/verify", response);
+        const verifyData = verify.data;
+        console.log(verifyData);
+      },
+      prefill: {
+        name: "Rabilal Murmu",
+        email: "rabilal@example.com",
+        contact: "9999999999",
+      },
+      theme: {
+        color: "#528FF0",
+      },
+    };
 
-      const verifyData = verify.data;
-      console.log(verifyData);
+    // 4. Open Razorpay checkout
+    //@ts-ignore
+    const razorpay = new window.Razorpay(options);
+    razorpay.open();
+  } catch (error: any) {
+    return {
+      error: true,
+      message: error?.message || "Oops - Somthing went wrong.",
+    };
+  }
+};
+/**
+ * {
+      id: "105",
+      status: "pending",
+      createdAt: new Date().toISOString(),
+      total: 340,
+      items: [
+        { id: "i1", name: "Cold Coffee", quantity: 2, price: 120 },
+        { id: "i2", name: "Donut", quantity: 1, price: 100 },
+      ],
     },
-    prefill: {
-      name: "Rabilal Murmu",
-      email: "rabilal@example.com",
-      contact: "9999999999",
-    },
-    theme: {
-      color: "#528FF0",
-    },
-  };
+ */
+const structureOrderData = (data: any[]) => {
+  console.log(data);
+  return data.map((order) => ({
+    id: order.order_id,
+    status: order.status,
+    createdAt: order.createdAt,
+    total: order.total_price,
+    //@ts-ignore
+    paymentStatus: order.Payment[0].status === "captured" ? "Paid" : "Unpaid",
+    items: order.order_list.ListItems.map((item: any) => ({
+      id: item.item_id,
+      name: item.item.name,
+      quantity: item.quantity,
+      price: item.item.price,
+      description: item.item.description,
+      picture: item.item?.photo,
+      category: item.item.category_id,
+    })),
+  }));
+};
 
-  // 4. Open Razorpay checkout
-  //@ts-ignore
-  const razorpay = new window.Razorpay(options);
-  razorpay.open();
+export const getUserOrders = async (userId: number) => {
+  try {
+    const response = await API.post("/orders/get/user", { userId });
+    const structuredData = structureOrderData(response.data.data);
+    return {
+      success: true,
+      data: structuredData,
+    };
+  } catch (error: any) {
+    return {
+      error: true,
+      message: error?.message || "Oops - Somthing went wrong.",
+    };
+  }
 };

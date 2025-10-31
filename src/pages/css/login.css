@@ -144,3 +144,19 @@
     height: 220px;
   }
 }
+
+@media (max-width: 768px) {
+  .login-left h1 {
+    font-size: 1.8rem;
+  }
+
+  .login-content h2 {
+    font-size: 1.5rem;
+  }
+  .login-overlay h1 {
+    font-size: 1.5rem;
+  }
+  .login-overlay p {
+    font-size: 1rem;
+  }
+}

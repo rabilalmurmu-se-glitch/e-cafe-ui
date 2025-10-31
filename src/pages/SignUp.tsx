@@ -45,8 +45,7 @@ const Signup: React.FC = () => {
         <div className="signup-overlay">
           <h1>Join Us 🚀</h1>
           <p>
-            Create your account and start managing your team, tasks, and
-            projects efficiently.
+            Create an account to start your journey with us.
           </p>
         </div>
       </div>

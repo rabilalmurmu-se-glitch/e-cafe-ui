@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./css/contact.css";
-import { notifyError } from "../utils/Notify";
-import { getShopDetails } from "../controllers/shop";
+import { useShopStore } from "../store/useShopStore";
+import { createLead } from "../controllers/shop";
+import { notifyError, notifySuccess } from "../utils/Notify";
 
 const Contact: React.FC = () => {
-  const [shop, setShop] = useState<any>();
-
+  const { shopInfo } = useShopStore();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -18,24 +18,16 @@ const Contact: React.FC = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Contact Form Data:", formData);
-    alert("Message sent successfully!");
+    const { error, message } = await createLead(formData);
+    if (error) {
+      notifyError("Failed to send message: " + message);
+      return;
+    }
+    notifySuccess("Thank you for reaching out! We'll get back to you soon.");
     setFormData({ name: "", email: "", message: "" });
   };
-
-  useEffect(() => {
-    (async () => {
-      const { error, message, data } = await getShopDetails();
-      if (error) {
-        notifyError(message);
-        return;
-      }
-      console.log(data);
-      setShop(data.data);
-    })();
-  }, []);
 
   return (
     <div className="contact-page">
@@ -86,9 +78,9 @@ const Contact: React.FC = () => {
         {/* Contact Info */}
         <div className="contact-info">
           <h2>Get in Touch</h2>
-          <p>Email: {!shop ? "Loading...." : shop.email}</p>
-          <p>Phone: {!shop ? "Loading...." : shop.phone}</p>
-          <p>Address: {!shop ? "Loading...." : shop.address}</p>
+          <p>Email: {!shopInfo ? "Loading...." : shopInfo.email}</p>
+          <p>Phone: {!shopInfo ? "Loading...." : shopInfo.phone}</p>
+          <p>Address: {!shopInfo ? "Loading...." : shopInfo.address}</p>
         </div>
       </div>
     </div>

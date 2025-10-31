@@ -1,0 +1,218 @@
+.orders-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-family: system-ui, sans-serif;
+}
+
+.orders-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.order-card {
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  background-color: var(--background);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.current-order {
+  border-color: var(--accent);
+  background-color: var(--background);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.order-id {
+  color: var(--primary);
+  font-weight: bold;
+}
+
+.order-items {
+  border-top: 1px solid var(--accent);
+  border-bottom: 1px solid var(--accent);
+  padding: 0.5rem 0;
+  margin: 0.5rem 0;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+}
+
+.order-total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.previous-orders h2 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.no-orders {
+  color: var(--primary);
+  font-size: 0.9rem;
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+
+.status {
+  text-transform: capitalize;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.status.completed {
+  color: #0f9d58;
+  background: #e6f4ea;
+}
+
+.status.cancelled {
+  color: #d93025;
+  background: #fce8e6;
+}
+
+.status.pending {
+  color: var(--accent);
+  background: #fef7e0;
+}
+
+.btn-primary,
+.btn-secondary {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--text-light);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent);
+}
+
+.btn-secondary {
+  background-color: var(--primary);
+}
+
+.btn-secondary:hover {
+  background-color: var(--accent);
+}
+
+.payment-status {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+  margin-left: 8px;
+}
+
+.payment-status.paid {
+  background: #d4edda;
+  color: #155724;
+}
+
+.payment-status.unpaid {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.payment-status.failed {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.order-details {
+  background: #fafafa;
+  margin-top: 8px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  animation: slideDown 0.3s ease-in-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+  }
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px 0;
+}
+.detail-item > img {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+.order-item > img {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+/* Loader */
+.orders-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  color: #555;
+  font-size: 1rem;
+}
+.order-items > a {
+  text-decoration: none;
+  color: inherit;
+}
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #ccc;
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 0.5rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

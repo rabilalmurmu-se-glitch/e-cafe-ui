@@ -1,21 +1,43 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-interface ListItems {
-  items: any[];
-  subTotal: number;
-  updateItems: (data: any[], total: number) => void;
+interface UpdateActionProps {
+  data?: any[];
+  total?: number;
+  shopInfo?: null | any;
 }
 
-export const useListItems = create<ListItems>()(
+interface ShopProps {
+  items: any[];
+  shopInfo: null | any;
+  subTotal: number;
+  updateItems: (params: UpdateActionProps) => void;
+  clearStore: () => void;
+}
+
+export const useShopStore = create<ShopProps>()(
   persist(
     (set) => ({
       items: [],
+      shopInfo: null,
       subTotal: 0,
-      updateItems: (data, total) => set({ items: data, subTotal: total }),
+
+      updateItems: ({ data, total, shopInfo }: UpdateActionProps) =>
+        set((state) => ({
+          items: data ?? state.items,
+          subTotal: total ?? state.subTotal,
+          shopInfo: shopInfo ?? state.shopInfo,
+        })),
+
+      clearStore: () =>
+        set({
+          items: [],
+          shopInfo: null,
+          subTotal: 0,
+        }),
     }),
     {
-      name: "list-items",
+      name: "shop-data",
       storage: createJSONStorage(() => sessionStorage),
     }
   )
