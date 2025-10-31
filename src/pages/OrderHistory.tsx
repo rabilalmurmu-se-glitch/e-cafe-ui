@@ -17,7 +17,6 @@ const OrderHistory: React.FC = () => {
       try {
         const result = await getUserOrders(user.id);
         if (result?.error) return notifyError(result.message);
-        console.log(result.data);
         setOrders(result?.data || []);
       } catch (error) {
         console.error("Failed to fetch orders:", error);

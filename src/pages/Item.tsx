@@ -15,13 +15,12 @@ const Item: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const handleOrder = async (order: any) => {
-    console.log("Order details =>", order);
     if (!user?.id) {
       notifyError("Please login first then try again thankyou");
       return;
     }
     const { quantity, itemId } = order;
-    const { error, message, data } = await addItemToOrderList({
+    const { error, message } = await addItemToOrderList({
       userId: user?.id,
       item_id: itemId,
       quantity,
@@ -30,7 +29,6 @@ const Item: React.FC = () => {
       notifyError(message);
       return;
     }
-    console.log(data);
     notifySuccess("Item added to list successfully!");
   };
 

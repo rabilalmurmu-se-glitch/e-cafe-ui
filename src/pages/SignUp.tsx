@@ -34,8 +34,6 @@ const Signup: React.FC = () => {
 
     notifySuccess("Registration successfull");
     setTimeout(() => (location.href = "/login"), 1000);
-
-    console.log("Signup Data:", formData);
   };
 
   return (
@@ -44,9 +42,7 @@ const Signup: React.FC = () => {
       <div className="signup-left">
         <div className="signup-overlay">
           <h1>Join Us 🚀</h1>
-          <p>
-            Create an account to start your journey with us.
-          </p>
+          <p>Create an account to start your journey with us.</p>
         </div>
       </div>
 

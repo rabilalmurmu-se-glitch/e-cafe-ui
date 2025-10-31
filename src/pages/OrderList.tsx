@@ -26,7 +26,6 @@ const OrderList: React.FC = () => {
   );
 
   const handleRemove = async (id: number) => {
-    console.log("Removed item ID:", id);
     const { error, message } = await removeItemFromList(id);
     if (error) return notifyError(message);
     fetchOrderItems(user.id);
@@ -34,7 +33,6 @@ const OrderList: React.FC = () => {
 
   useEffect(() => {
     if (user?.id) fetchOrderItems(user.id);
-    console.log("first");
   }, [user, fetchOrderItems]);
 
   const handlePlaceOrder = async (type: string) => {
@@ -72,7 +70,6 @@ const OrderList: React.FC = () => {
     );
     if (!result) return;
     if (result.error) return notifyError(result.message);
-    console.log(result.data);
     if (result.success)
       return notifySuccess("😊 Your order has been placed succefully!");
   };

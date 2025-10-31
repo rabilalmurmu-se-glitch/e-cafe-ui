@@ -1,7 +1,6 @@
 import { API } from "../utils/api";
 
 export const addItemToOrderList = async (data: Record<string, any>) => {
-  console.log(data);
   try {
     const response = await API.post("/list-items", data);
     return {
@@ -99,7 +98,6 @@ export const PlaceOrder = async (
         data: response.data,
       };
     }
-    console.log(data);
     // 2. Razorpay options
     const options = {
       key: "rzp_test_RY4nlFOyQAnYq8", // replace with your Razorpay key_id
@@ -111,12 +109,10 @@ export const PlaceOrder = async (
       handler: async function (response: any) {
         alert("Payment successful!");
 
-        console.log(response);
         // 3. Verify payment
         const verify = await API.post("/orders/verify-order", response);
 
         const verifyData = verify.data;
-        console.log(verifyData);
       },
       prefill: {
         name: "Rabilal Murmu",
@@ -139,20 +135,8 @@ export const PlaceOrder = async (
     };
   }
 };
-/**
- * {
-      id: "105",
-      status: "pending",
-      createdAt: new Date().toISOString(),
-      total: 340,
-      items: [
-        { id: "i1", name: "Cold Coffee", quantity: 2, price: 120 },
-        { id: "i2", name: "Donut", quantity: 1, price: 100 },
-      ],
-    },
- */
+
 const structureOrderData = (data: any[]) => {
-  console.log(data);
   return data.map((order) => ({
     id: order.order_id,
     status: order.status,

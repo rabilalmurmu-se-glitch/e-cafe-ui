@@ -12,13 +12,11 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Login Attempt:", { email, password });
     const { error, data, message } = await login({ email, password });
     if (error) {
       notifyError(message);
       return;
     }
-    console.log(data.data);
     notifySuccess("Login success!");
     setUser(data.data);
     setTimeout(() => (location.href = "/"), 1000);
